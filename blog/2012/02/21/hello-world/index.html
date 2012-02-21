@@ -10,8 +10,7 @@
 
   
   <meta name="description" content="In this blog, I am going to publish my deepest feelings about code, usually
-guarded by a cataract of words supporting my holy opinion.
-">
+guarded by a cataract of words supporting my holy opinion. Sandbox / &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -94,6 +93,66 @@ guarded by a cataract of words supporting my holy opinion.
 
 <div class="entry-content"><p>In this blog, I am going to publish my deepest feelings about code, usually
 guarded by a cataract of words supporting my holy opinion.</p>
+
+<!--more-->
+
+
+<h2>Sandbox / Cheatsheet / Testbed</h2>
+
+<h1>Code</h1>
+
+<p>Why isn&#8217;t that in the stdlib?</p>
+
+<figure class='code'><figcaption><span>slashing Pathnames  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Pathname</span>
+</span><span class='line'>  <span class="n">alias_method</span><span class="p">,</span> <span class="ss">:/</span><span class="p">,</span> <span class="ss">:join</span>
+</span><span class='line'>  <span class="c1"># vim highlighting is confused by unbalanced underscores_</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Because I did not supply a patch, that&#8217;s why!</p>
+
+<h1>Gist</h1>
+
+<p>Trying to define an eigenclass method in ruby keeping closure - cannot remember
+why or if it&#8217;s working.</p>
+
+<div><script src='https://gist.github.com/1203256.js?file='></script>
+<noscript><pre><code>
+class Object
+  def eigenclass
+    class &lt;&lt; self; self; end
+  end
+  def eigenclass_eval(&amp;block)
+    eigenclass.instance_eval &amp;block
+  end
+end
+
+me = &quot;me&quot;
+
+def me.wine
+  STDERR.puts &quot;*whining*&quot;
+end
+
+thing = &quot;dope&quot;
+
+me.eigenclass_eval do
+  define_method :enjoy do
+    STDERR.puts &quot;ooh, #{thing}&quot;
+  end
+end
+
+
+me.wine
+me.enjoy</code></pre></noscript></div>
+
+
+
 </div>
 
 
