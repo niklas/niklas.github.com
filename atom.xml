@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Niklas' Code Salad]]></title>
+  <link href="http://niklas.github.com/atom.xml" rel="self"/>
+  <link href="http://niklas.github.com/"/>
+  <updated>2012-02-21T02:41:22+01:00</updated>
+  <id>http://niklas.github.com/</id>
+  <author>
+    <name><![CDATA[Niklas]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World]]></title>
+    <link href="http://niklas.github.com/blog/2012/02/21/hello-world/"/>
+    <updated>2012-02-21T02:30:00+01:00</updated>
+    <id>http://niklas.github.com/blog/2012/02/21/hello-world</id>
+    <content type="html"><![CDATA[<p>In this blog, I am going to publish my deepest feelings about code, usually
+guarded by a cataract of words supporting my holy opinion.</p>
+]]></content>
+  </entry>
+  
+</feed>
