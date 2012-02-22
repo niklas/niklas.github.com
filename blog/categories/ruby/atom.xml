@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ruby | Niklas' Code Salad]]></title>
+  <link href="http://niklas.github.com/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://niklas.github.com/"/>
+  <updated>2012-02-23T00:28:39+01:00</updated>
+  <id>http://niklas.github.com/</id>
+  <author>
+    <name><![CDATA[Niklas]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Arranged marriage between Draper and RJS]]></title>
+    <link href="http://niklas.github.com/blog/2012/02/22/arranged-marriage-between-draper-and-rjs/"/>
+    <updated>2012-02-22T23:23:00+01:00</updated>
+    <id>http://niklas.github.com/blog/2012/02/22/arranged-marriage-between-draper-and-rjs</id>
+    <content type="html"><![CDATA[<p>How to solve the problem of Javascript-rich interfaces with a Rails backend.</p>
+
+<!--more-->
+
+
+<h2>RJS is dead</h2>
+
+<p>Do you remember RJS? It was introduced somewhere around version 1 of rails (or
+even earlier, please correct me) and provided a template language in pure ruby
+to respond to AJAX actions.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/views/posts/update.js.rjs  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">replace_html</span> <span class="s1">&#39;posts&#39;</span><span class="p">,</span> <span class="ss">:partial</span> <span class="o">=&gt;</span> <span class="s1">&#39;list&#39;</span>
+</span><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">visual_effect</span> <span class="ss">:highlight</span><span class="p">,</span> <span class="s1">&#39;posts&#39;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>This was still during the benign reign of <a href="http://www.prototypejs.org/">Prototype</a>
+and the template would have been called <code>update.rjs</code>. There also was a way of
+rendering Javascript directly from your controller actions:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>app/controllers/posts_controller.b  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">PostController</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">ApplicationController</span> <span class="c1"># no inherited resources or similar</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">create</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt; # update the model ..</span>
+</span><span class='line'><span class="sr"> if request.rjs?</span>
+</span><span class='line'><span class="sr">   render :update do |page|</span>
+</span><span class='line'><span class="sr">     page[&#39;posts_count&#39;].replace Post.count # this would target element #post_count</span>
+</span><span class='line'><span class="sr">   end</span>
+</span><span class='line'><span class="sr"> end</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
+</span><span class='line'><span class="sr">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>The significant part here is the <code>page</code> object, which magically geerated
+Prototype-JS for us.  But over time, RJS became deprecated. I did not follow
+the procedings, so I do not know the reasons. Maybe it tempted to pinch the MVC
+layer a little bit too much (Controller example above) or with the rise of
+<a href="http://jquery.com/">jQuery</a> (yeah!) it lost its primer target. Or there was to
+much magic involved.</p>
+
+<p>I admit, if not properly cleaning up after every commit, RJS templates could
+become a mess. Additionally, the interaction with helpers was strange. You
+could call a helper on the <code>page</code> object, but from within this helper, the page
+object was only accessible through hoops. So no real refactoring was possible.</p>
+
+<p>Until now!</p>
+
+<h2>Long live RJS!</h2>
+
+<p>I think the current approach of generating JS from Rails is tedious.
+<code>lala.js.coffee.erb</code> looks nice in theory, but in practice this is a mess. My
+HAML-coddled eyes don't want to see no angle brackets no more! Manual escaping of HTML?
+Letting Rails serve only JSON on the other hand makes a full-blown Rails stack kind of
+obsolete.</p>
+
+<p>With the recent occurence of Presenters like <a href="https://github.com/jcasimir/draper">Draper</a> or <a href="http://railscasts.com/episodes/287-presenters-from-scratch">your own quickly setup presenter</a>, it now becomes possible to write Rails applications controller their browsed views by Javascript. I will show my findings with the first, but it may easily achieved with every other class following decorator pattern (TM).</p>
+
+<p>Add draper and versatile-rjs to your Gemfile to resurrect that magic zombie.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Gemfile  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;draper&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;versatile_rjs&#39;</span><span class="p">,</span> <span class="ss">:git</span> <span class="o">=&gt;</span> <span class="err">&#39;</span><span class="n">git</span><span class="ss">:/</span><span class="o">/</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">niklas</span><span class="o">/</span><span class="n">versatile_rjs</span><span class="o">.</span><span class="n">git</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Open a bottle of champagne, dim the light, and initialize first contact.</p>
+
+<p><div><script src='https://gist.github.com/1888149.js?file='></script>
+<noscript><pre><code># in your .js.rjs templates, you can call #decorate on the magic page object
+# and then use RJS-powered methods from within your Decorator
+#
+#    page.decorate User.first do |user|
+#      user.blink
+#    end
+#
+#    class UserDecorator &lt; ApplicationDecorator
+#      def blink
+#        page[ &quot;user_#{model.id}&quot; ].animate 'blink'
+#      end
+#    end
+
+module Draper::RJS
+  def self.included(base)
+    base.class_eval do
+      alias_method_chain :initialize, :rjs
+      attr_accessor :page
+    end
+  end
+
+  def initialize_with_rjs(input, options={})
+    initialize_without_rjs(input, options)
+    self.page = options.delete(:page)
+  end
+
+  def page?
+    !!page
+  end
+end
+
+Draper::Base.class_eval do
+  include Draper::RJS
+end
+
+module VersatileRJS::Draper
+  def decorate(resource, options={}, &amp;block)
+    resource.decorate options.merge(:page =&gt; self), &amp;block
+  end
+end
+
+VersatileRJS::Page.class_eval do
+  include VersatileRJS::Draper
+end</code></pre></noscript></div>
+</p>
+
+<p>Put this into an initializer or your favoured monkeypatch cage and require it
+once during application startup.</p>
+
+<h2>And it may prevail</h2>
+
+<p>As demonstrated in the comment of above gist, you can still know extend the
+<code>page</code> proxy, but use the presenter around it. And because it uses jQuery (of
+course), the calls to it can be chained. In our code we use symbol-based
+lookup for elements on the page. Here is some example code; some endpoints are
+still missing, but you'll get the idea.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>application_decorator.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">ApplicationDecorator</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">Draper</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="c1"># You may implement #selector_for in your subclass (don&#39;t forget to call super in the else)</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">selector_for</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">resource</span><span class="o">=</span><span class="kp">nil</span><span class="p">,</span> <span class="o">*</span><span class="n">more</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;case name</span>
+</span><span class='line'><span class="sr">when :errors_for</span>
+</span><span class='line'><span class="sr">  %Q~</span><span class="si">#{</span><span class="n">selector_for</span><span class="p">(</span><span class="ss">:form_for</span><span class="p">,</span> <span class="n">resource</span><span class="p">)</span><span class="si">}</span><span class="sr"> .errors~</span>
+</span><span class='line'><span class="sr">when :form_for</span>
+</span><span class='line'><span class="sr">  if resource.to_key</span>
+</span><span class='line'><span class="sr">    %Q~form#</span><span class="si">#{</span><span class="n">h</span><span class="o">.</span><span class="n">dom_id</span> <span class="n">resource</span><span class="p">,</span> <span class="ss">:edit</span><span class="si">}</span><span class="sr">~</span>
+</span><span class='line'><span class="sr">  else</span>
+</span><span class='line'><span class="sr">    %Q~form#</span><span class="si">#{</span><span class="n">h</span><span class="o">.</span><span class="n">dom_id</span> <span class="n">resource</span><span class="si">}</span><span class="sr">~</span>
+</span><span class='line'><span class="sr">  end</span>
+</span><span class='line'><span class="sr">else</span>
+</span><span class='line'><span class="sr">  raise ArgumentError, &quot;cannot find selector for </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="sr">&quot;</span>
+</span><span class='line'><span class="sr">end</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="c1"># select a specific element on the page.</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;page.select selector_for(*a)</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;select(*a).remove()</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="c1"># append validation errors for given &lt;code&gt;resource&lt;/code&gt; to its form</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">insert_errors_for</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;select(:errors_for, resource).remove()</span>
+</span><span class='line'><span class="sr">select(:form_for, resource).append errors_for(resource)</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
+</span><span class='line'><span class="sr">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>fnord_decorator.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">FnordDecorator</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">ApplicationDecorator</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">update_box_for</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;select(:box, resource).html render_the_resource_with_partial_or_whatever</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
+</span><span class='line'><span class="sr">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>create.js.rjs  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">page</span><span class="o">.</span><span class="n">decorate</span> <span class="n">resource</span> <span class="k">do</span> <span class="o">|</span><span class="n">fnord</span><span class="o">|</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">resource</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">empty?</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;fnord.update_box_for(resource)</span>
+</span><span class='line'><span class="sr">fnord.remove :form_for, resource</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  else&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">fnord</span><span class="o">.</span><span class="n">insert_errors_for</span><span class="p">(</span><span class="n">resource</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="sr">/code&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>So...</h2>
+
+<p>There we go, finally a JS generating interface that looks clean, removes
+duplication and uses all the Rails' features.</p>
+]]></content>
+  </entry>
+  
+</feed>
