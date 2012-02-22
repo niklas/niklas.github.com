@@ -40,9 +40,9 @@ class PostController < ApplicationController # no inherited resources or similar
 end
 {% endcodeblock %}
 
-The significant part here is the `page` object, which magically geerated
+The significant part here is the `page` object, which magically generated
 Prototype-JS for us.  But over time, RJS became deprecated. I did not follow
-the procedings, so I do not know the reasons. Maybe it tempted to pinch the MVC
+the proceedings, so I do not know the reasons. Maybe it tempted to pinch the MVC
 layer a little bit too much (Controller example above) or with the rise of
 [jQuery](http://jquery.com/) (yeah!) it lost its primer target. Or there was to 
 much magic involved.
@@ -63,7 +63,7 @@ HAML-coddled eyes don't want to see no angle brackets no more! Manual escaping o
 Letting Rails serve only JSON on the other hand makes a full-blown Rails stack kind of
 obsolete.
 
-With the recent occurence of Presenters like [Draper](https://github.com/jcasimir/draper) or [your own quickly setup presenter](http://railscasts.com/episodes/287-presenters-from-scratch), it now becomes possible to write Rails applications controller their browsed views by Javascript. I will show my findings with the first, but it may easily achieved with every other class following decorator pattern (TM).
+With the recent occurrence of Presenters like [Draper](https://github.com/jcasimir/draper) or [your own quickly setup presenter](http://railscasts.com/episodes/287-presenters-from-scratch), it now becomes possible to write Rails applications controller their browsed views by Javascript. I will show my findings with the first, but it may easily achieved with every other class following decorator pattern (TM).
 
 
 Add draper and versatile-rjs to your Gemfile to resurrect that magic zombie.
@@ -77,7 +77,7 @@ Open a bottle of champagne, dim the light, and initialize first contact.
 
 {% gist 1888149 %}
 
-Put this into an initializer or your favoured monkeypatch cage and require it
+Put this into an initializer or your favored monkey patch cage and require it
 once during application startup.
 
 And it may prevail
