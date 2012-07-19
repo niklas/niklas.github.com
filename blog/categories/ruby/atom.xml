@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Niklas' Code Salad]]></title>
   <link href="http://niklas.github.com/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://niklas.github.com/"/>
-  <updated>2012-02-23T00:37:25+01:00</updated>
+  <updated>2012-07-19T20:43:52+02:00</updated>
   <id>http://niklas.github.com/</id>
   <author>
     <name><![CDATA[Niklas]]></name>
@@ -99,7 +99,7 @@ obsolete.</p>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">gem</span> <span class="s1">&#39;draper&#39;</span>
-</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;versatile_rjs&#39;</span><span class="p">,</span> <span class="ss">:git</span> <span class="o">=&gt;</span> <span class="err">&#39;</span><span class="n">git</span><span class="ss">:/</span><span class="o">/</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">niklas</span><span class="o">/</span><span class="n">versatile_rjs</span><span class="o">.</span><span class="n">git</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;versatile_rjs&#39;</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Open a bottle of champagne, dim the light, and initialize first contact.</p>
