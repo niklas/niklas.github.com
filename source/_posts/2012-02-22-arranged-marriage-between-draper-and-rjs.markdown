@@ -70,7 +70,7 @@ Add draper and versatile-rjs to your Gemfile to resurrect that magic zombie.
 
 {% codeblock Gemfile lang:ruby %}
 gem 'draper'
-gem 'versatile_rjs', :git => 'git://github.com/niklas/versatile_rjs.git
+gem 'versatile_rjs'
 {% endcodeblock %}
 
 Open a bottle of champagne, dim the light, and initialize first contact.
